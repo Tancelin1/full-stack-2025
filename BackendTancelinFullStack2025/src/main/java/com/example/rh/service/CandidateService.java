@@ -45,7 +45,6 @@ public class CandidateService {
 
             return repository.save(candidateToUpdate);
         } else {
-            // Si l'ID n'existe pas, on peut soit renvoyer null, soit créer une nouvelle entrée
             return null;
         }
     }

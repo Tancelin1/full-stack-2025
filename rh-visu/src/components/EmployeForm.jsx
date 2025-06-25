@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
 const EmployeForm = ({ initialData, onSave, onCancel }) => {
-  // State local pour tous les champs, avec valeurs initiales ou vides
   const [formData, setFormData] = useState({
     name: '',
     occupation: '',
@@ -16,9 +15,10 @@ const EmployeForm = ({ initialData, onSave, onCancel }) => {
     phone: '',
     observation: '',
     absenceDays: 0,
+    globalConges: 0,
+    globalAbsences: 0,
   });
 
-  // Remplir le formulaire si initialData change (édition)
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -34,11 +34,12 @@ const EmployeForm = ({ initialData, onSave, onCancel }) => {
         phone: initialData.phone || '',
         observation: initialData.observation || '',
         absenceDays: initialData.absenceDays || 0,
+        globalConges: initialData.globalConges || 0,
+        globalAbsences: initialData.globalAbsences || 0,
       });
     }
   }, [initialData]);
 
-  // Gestion changement inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -47,7 +48,6 @@ const EmployeForm = ({ initialData, onSave, onCancel }) => {
     }));
   };
 
-  // Soumission formulaire
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave(formData);
@@ -55,7 +55,6 @@ const EmployeForm = ({ initialData, onSave, onCancel }) => {
 
   return (
     <Form onSubmit={handleSubmit}>
-
       <Form.Group className="mb-3" controlId="name">
         <Form.Label>Nom</Form.Label>
         <Form.Control
@@ -74,18 +73,18 @@ const EmployeForm = ({ initialData, onSave, onCancel }) => {
           name="occupation"
           value={formData.occupation}
           onChange={handleChange}
+          required
         />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="salary">
-        <Form.Label>Salaire (€)</Form.Label>
+        <Form.Label>Salaire</Form.Label>
         <Form.Control
           type="number"
           name="salary"
           value={formData.salary}
           onChange={handleChange}
-          min="0"
-          step="0.01"
+          required
         />
       </Form.Group>
 
@@ -110,7 +109,7 @@ const EmployeForm = ({ initialData, onSave, onCancel }) => {
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="contractStart">
-        <Form.Label>Début du contrat</Form.Label>
+        <Form.Label>Début de contrat</Form.Label>
         <Form.Control
           type="date"
           name="contractStart"
@@ -120,7 +119,7 @@ const EmployeForm = ({ initialData, onSave, onCancel }) => {
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="contractEnd">
-        <Form.Label>Fin du contrat</Form.Label>
+        <Form.Label>Fin de contrat</Form.Label>
         <Form.Control
           type="date"
           name="contractEnd"
@@ -152,7 +151,7 @@ const EmployeForm = ({ initialData, onSave, onCancel }) => {
       <Form.Group className="mb-3" controlId="phone">
         <Form.Label>Téléphone</Form.Label>
         <Form.Control
-          type="tel"
+          type="text"
           name="phone"
           value={formData.phone}
           onChange={handleChange}
@@ -164,7 +163,6 @@ const EmployeForm = ({ initialData, onSave, onCancel }) => {
         <Form.Control
           as="textarea"
           name="observation"
-          rows={3}
           value={formData.observation}
           onChange={handleChange}
         />
@@ -178,6 +176,28 @@ const EmployeForm = ({ initialData, onSave, onCancel }) => {
           value={formData.absenceDays}
           onChange={handleChange}
           min="0"
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="globalConges">
+        <Form.Label>Total jours de congé</Form.Label>
+        <Form.Control
+          type="number"
+          name="globalConges"
+          value={formData.globalConges}
+          readOnly
+          plaintext
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="globalAbsences">
+        <Form.Label>Total jours d'absence (calculés)</Form.Label>
+        <Form.Control
+          type="number"
+          name="globalAbsences"
+          value={formData.globalAbsences}
+          readOnly
+          plaintext
         />
       </Form.Group>
 

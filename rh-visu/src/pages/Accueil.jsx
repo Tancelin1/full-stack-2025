@@ -12,7 +12,7 @@ export default function Accueil() {
       .catch(() => setCandidatesCount(0));
 
     // Fetch employees count
-    fetch('http://localhost:8080/api/employee')
+    fetch('http://localhost:8080/api/employees')
       .then(res => res.json())
       .then(data => setEmployeesCount(data.length || 0))
       .catch(() => setEmployeesCount(0));
