@@ -1,61 +1,49 @@
 import React from 'react';
-import { Button, Card } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 
-const CandidateDetails = ({ candidate, onBack, onEdit }) => {
+const CandidateDetails = ({ candidate, handleEdit, handleDelete }) => {
+  if (!candidate) return null;
+
   return (
-    <Card className="p-4">
-      <h2>Détails du candidat</h2>
-
+    <div>
+      <h4>Détails du candidat</h4>
       <div className="mb-3">
-        <strong>Nom :</strong> {candidate.name}
-      </div>
-      <div className="mb-3">
-        <strong>Poste :</strong> {candidate.occupation}
-      </div>
-      <div className="mb-3">
-        <strong>Salaire :</strong> {candidate.salary} €
-      </div>
-      <div className="mb-3">
-        <strong>Numéro d'identification :</strong> {candidate.identificationNumber}
-      </div>
-      <div className="mb-3">
-        <strong>Date de naissance :</strong> {candidate.birthDate}
-      </div>
-      <div className="mb-3">
-        <strong>Début du contrat :</strong> {candidate.contractStart}
-      </div>
-      <div className="mb-3">
-        <strong>Fin du contrat :</strong> {candidate.contractEnd}
-      </div>
-      <div className="mb-3">
-        <strong>Adresse :</strong> {candidate.address}
-      </div>
-      <div className="mb-3">
-        <strong>Email :</strong> {candidate.email}
-      </div>
-      <div className="mb-3">
-        <strong>Téléphone :</strong> {candidate.phone}
-      </div>
-      <div className="mb-3">
-        <strong>Observation :</strong> {candidate.observation}
-      </div>
-
-      <div className="mb-3">
-        <strong>Jours de congé globaux :</strong> {candidate.globalConges}
-      </div>
-      <div className="mb-3">
-        <strong>Jours d'absence globaux :</strong> {candidate.globalAbsences}
-      </div>
-
-      <div className="d-flex">
-        <Button variant="secondary" onClick={onBack} className="me-2">
-          Retour
+        <Button variant="primary" className="me-2" onClick={() => handleEdit(candidate)}>
+          Mettre à jour les données
         </Button>
-        <Button variant="primary" onClick={onEdit}>
-          Modifier
+        <Button variant="danger" onClick={() => handleDelete(candidate.id)}>
+          Supprimer le candidat
         </Button>
       </div>
-    </Card>
+
+      <Table
+        striped={false}
+        bordered={false}
+        hover={false}
+        responsive={false}
+        style={{ borderCollapse: 'collapse' }}
+      >
+        <tbody>
+          {[
+            ['Nom', candidate.name],
+            ['Numéro de carte identité', candidate.identificationNumber || '—'],
+            ['Date de naissance', candidate.birthDate || '—'],
+            ['Adresse', candidate.address || '—'],
+            ['Email', candidate.email],
+            ['Téléphone', candidate.phone || '—'],
+            ['Note (1-10)', candidate.score || '—'],
+            ['Domaine technique', candidate.technicalField || '—'],
+            ['Date de l\'entretien', candidate.interviewDate || '—'],
+            ['Observation', candidate.observation || '—'],
+          ].map(([label, value]) => (
+            <tr key={label}>
+              <td style={{ padding: '4px 8px', fontWeight: 'bold', width: '40%' }}>{label}</td>
+              <td style={{ padding: '4px 8px' }}>{value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
   );
 };
 

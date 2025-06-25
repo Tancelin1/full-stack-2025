@@ -40,8 +40,6 @@ const Employes = () => {
       contractEnd: '',
       observation: '',
       absenceDays: 0,
-      conges: [],
-      absences: [],
     });
     setShowForm(true);
     setSelectedEmploye(null);
@@ -170,10 +168,10 @@ const Employes = () => {
       {selectedEmploye && !showForm && (
         <div className="mt-4">
           <h4>Détails de l'employé</h4>
-          <EmployeDetails
-            employe={selectedEmploye}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
+          <EmployeDetails 
+            employe={selectedEmploye} 
+            handleEdit={handleEdit} 
+            handleDelete={handleDelete} 
           />
         </div>
       )}

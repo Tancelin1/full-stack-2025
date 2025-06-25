@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, Modal } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import CandidateForm from '../components/CandidateForm';
+import CandidateDetails from '../components/CandidateDetails';
 
 const API_URL = 'http://localhost:8080/api/candidates';
 
@@ -9,7 +10,6 @@ const Candidates = () => {
   const [showForm, setShowForm] = useState(false);
   const [formInitialData, setFormInitialData] = useState(null);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
-  const [showViewModal, setShowViewModal] = useState(false);
 
   useEffect(() => {
     fetchCandidates();
@@ -20,30 +20,23 @@ const Candidates = () => {
       const res = await fetch(API_URL);
       if (!res.ok) throw new Error('Erreur lors du chargement des candidats');
       const data = await res.json();
-      const filtered = data.filter(
-        (c) => c.score !== undefined && c.score >= 1 && c.score <= 10
-      );
-      setCandidates(filtered);
+      setCandidates(data);
     } catch (error) {
-      console.error(error);
-      alert('Erreur lors du chargement des candidats');
+      alert(error.message);
     }
   };
 
   const handleAjouterClick = () => {
     setFormInitialData({
       name: '',
-      idCardNumber: '',
-      birthDate: '',
-      address: '',
+      technicalField: '',
       email: '',
       phone: '',
       score: '',
-      technicalField: '',
-      interviewDate: '',
-      observation: '',
+      // autres champs selon ton modèle
     });
     setShowForm(true);
+    setSelectedCandidate(null);
   };
 
   const handleCancelForm = () => {
@@ -52,57 +45,48 @@ const Candidates = () => {
   };
 
   const handleSaveForm = async (data) => {
-    let note = Number(data.score);
-    if (isNaN(note) || note < 1) note = 1;
-    else if (note > 10) note = 10;
-
-    const newData = { ...data, score: note };
-
     try {
       if (formInitialData && formInitialData.id) {
+        // Mise à jour
         const res = await fetch(`${API_URL}/${formInitialData.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newData),
+          body: JSON.stringify(data),
         });
         if (!res.ok) throw new Error('Erreur lors de la mise à jour');
         const updatedCandidate = await res.json();
         setCandidates((prev) =>
           prev.map((c) => (c.id === updatedCandidate.id ? updatedCandidate : c))
         );
+        setSelectedCandidate(updatedCandidate);
       } else {
+        // Création
         const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newData),
+          body: JSON.stringify(data),
         });
-        if (!res.ok) throw new Error("Erreur lors de l'ajout");
+        if (!res.ok) throw new Error('Erreur lors de la création');
         const newCandidate = await res.json();
-        if (newCandidate.score >=1 && newCandidate.score <= 10) {
-          setCandidates((prev) => [...prev, newCandidate]);
-        }
+        setCandidates((prev) => [...prev, newCandidate]);
+        setSelectedCandidate(newCandidate);
       }
       setShowForm(false);
       setFormInitialData(null);
     } catch (error) {
-      console.error(error);
       alert(error.message);
     }
   };
 
   const handleView = (candidate) => {
     setSelectedCandidate(candidate);
-    setShowViewModal(true);
-  };
-
-  const handleCloseView = () => {
-    setShowViewModal(false);
-    setSelectedCandidate(null);
+    setShowForm(false);
   };
 
   const handleEdit = (candidate) => {
     setFormInitialData(candidate);
     setShowForm(true);
+    setSelectedCandidate(null);
   };
 
   const handleDelete = async (id) => {
@@ -111,8 +95,10 @@ const Candidates = () => {
         const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error('Erreur lors de la suppression');
         setCandidates((prev) => prev.filter((c) => c.id !== id));
+        if (selectedCandidate?.id === id) {
+          setSelectedCandidate(null);
+        }
       } catch (error) {
-        console.error(error);
         alert(error.message);
       }
     }
@@ -193,32 +179,15 @@ const Candidates = () => {
         </tbody>
       </Table>
 
-      <Modal show={showViewModal} onHide={handleCloseView}>
-        <Modal.Header closeButton style={{ backgroundColor: '#0d6efd', color: 'white' }}>
-          <Modal.Title>Détails du candidat</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedCandidate && (
-            <div>
-              <p><strong>Nom :</strong> {selectedCandidate.name}</p>
-              <p><strong>Domaine technique :</strong> {selectedCandidate.technicalField}</p>
-              <p><strong>Email :</strong> {selectedCandidate.email}</p>
-              <p><strong>Téléphone :</strong> {selectedCandidate.phone}</p>
-              <p><strong>Numéro de carte d'identité :</strong> {selectedCandidate.idCardNumber}</p>
-              <p><strong>Adresse :</strong> {selectedCandidate.address}</p>
-              <p><strong>Date de naissance :</strong> {selectedCandidate.birthDate}</p>
-              <p><strong>Date d'entretien :</strong> {selectedCandidate.interviewDate}</p>
-              <p><strong>Note :</strong> {selectedCandidate.score}</p>
-              <p><strong>Observation :</strong> {selectedCandidate.observation}</p>
-            </div>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseView}>
-            Fermer
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {selectedCandidate && !showForm && (
+        <div className="mt-4">
+          <CandidateDetails
+            candidate={selectedCandidate}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
+        </div>
+      )}
     </div>
   );
 };
