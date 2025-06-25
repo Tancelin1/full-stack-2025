@@ -1,0 +1,12 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "employees": "Employés",
+    "candidates": "Candidats"
+  },
+  "pages": {
+    "home": "Bienvenue sur la page d'accueil",
+    "employees": "Liste des employés",
+    "candidates": "Liste des candidats"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "nav": {
+    "home": "Home",
+    "employees": "Employees",
+    "candidates": "Candidates"
+  },
+  "pages": {
+    "home": "Welcome to the home page",
+    "employees": "Employee list",
+    "candidates": "Candidate list"
+  }
+}
