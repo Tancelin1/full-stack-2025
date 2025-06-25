@@ -33,7 +33,6 @@ const Candidates = () => {
       email: '',
       phone: '',
       score: '',
-      // autres champs selon ton modèle
     });
     setShowForm(true);
     setSelectedCandidate(null);
@@ -47,7 +46,6 @@ const Candidates = () => {
   const handleSaveForm = async (data) => {
     try {
       if (formInitialData && formInitialData.id) {
-        // Mise à jour
         const res = await fetch(`${API_URL}/${formInitialData.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -60,7 +58,6 @@ const Candidates = () => {
         );
         setSelectedCandidate(updatedCandidate);
       } else {
-        // Création
         const res = await fetch(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

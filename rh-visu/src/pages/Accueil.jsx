@@ -5,13 +5,11 @@ export default function Accueil() {
   const [employeesCount, setEmployeesCount] = useState(null);
 
   useEffect(() => {
-    // Fetch candidats count
     fetch('http://localhost:8080/api/candidates')
       .then(res => res.json())
       .then(data => setCandidatesCount(data.length || 0))
       .catch(() => setCandidatesCount(0));
 
-    // Fetch employees count
     fetch('http://localhost:8080/api/employees')
       .then(res => res.json())
       .then(data => setEmployeesCount(data.length || 0))
